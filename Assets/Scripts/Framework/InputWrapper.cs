@@ -21,6 +21,11 @@ public class InputWrapper
         return GetStickState(Input.GetAxis(LeftStickX), Input.GetAxis(LeftStickY));
     }
 
+    public static Vector2 GetLeftStickVector()
+    {
+        return new Vector2(Input.GetAxis(LeftStickX), Input.GetAxis(LeftStickY)).normalized;
+    }
+
     public static StickState GetRightStick()
     {
         return GetStickState(Input.GetAxis(RightStickX), Input.GetAxis(RightStickY));
