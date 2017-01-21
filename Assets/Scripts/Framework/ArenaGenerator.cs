@@ -68,8 +68,10 @@ public class ArenaGenerator : MonoBehaviour
             for (int x = 0; x < grid.width; ++x)
             {
                 grid.cells[x, y].floorTile = Instantiate(floorPrefab, nextPos, Quaternion.identity, transform);
+                grid.cells[x, y].floorTile.SetActive(false);
                 grid.cells[x, y].wallTile = Instantiate(wallPrefab, nextPos, Quaternion.identity, transform);
                 grid.cells[x, y].wallTile.SetActive(false);
+                grid.ActivateFloor(x, y);
                 nextPos.x += 1;
             }
             nextPos.x = bottomLeftCorner.x;
@@ -102,19 +104,23 @@ public class ArenaGenerator : MonoBehaviour
         NumMutations
     }
 
-    private static readonly int MutationCount = 1;
+    private static readonly int MutationCount = 10;
+    private static readonly int MaxMutationAttempts = 100;
     private void MutateMap(ArenaGrid arena)
     {
         int mutations = 0;
-        while (mutations < MutationCount)
+        int mutationAttempts = 0;
+        while (mutations < MutationCount && mutationAttempts++ < MaxMutationAttempts)
         {
             Mutation nextMutation = (Mutation)Random.Range(0, (int)Mutation.NumMutations);
             Vec2i[] offsets = GetMutationOffsets(nextMutation);
             Vec2i randomGridPosition = arenaGrid.RandomCell();
             if (arena.MutationIsValid(randomGridPosition, offsets))
             {
-                arena.MutateRegion(randomGridPosition, offsets);
-                mutations += 1;
+                if (arena.AttemptMutateRegion(randomGridPosition, offsets))
+                {
+                    mutations += 1;
+                }
             }
         }
     }
@@ -187,6 +193,8 @@ public class ArenaGrid
     public ArenaCell[,] cells;
     public Vector2 origin;
     private HashSet<ArenaRegion> mutations;
+    private int floorCellCount = 0;
+    private bool[,] visitedNodes;
 
     public ArenaGrid(Vector2 origin, int width, int height)
     {
@@ -195,18 +203,29 @@ public class ArenaGrid
         cells = new ArenaCell[width, height];
         this.origin = origin;
         mutations = new HashSet<ArenaRegion>();
+        visitedNodes = new bool[width, height];
     }
 
     public void ActivateFloor(int x, int y)
     {
-        cells[x, y].floorTile.SetActive(true);
-        cells[x, y].wallTile.SetActive(false);
+        var cell = cells[x, y];
+        if (! cell.floorTile.activeSelf)
+        {
+            floorCellCount += 1;
+        }
+        cell.floorTile.SetActive(true);
+        cell.wallTile.SetActive(false);
     }
 
     public void ActivateWall(int x, int y)
     {
-        cells[x, y].floorTile.SetActive(false);
-        cells[x, y].wallTile.SetActive(true);
+        var cell = cells[x, y];
+        if (cell.floorTile.activeSelf)
+        {
+            floorCellCount -= 1;
+        }
+        cell.floorTile.SetActive(false);
+        cell.wallTile.SetActive(true);
     }
 
     public bool IsWallActive(int x, int y)
@@ -219,7 +238,7 @@ public class ArenaGrid
         return new Vec2i(Random.Range(0, width), Random.Range(0, height));
     }
 
-    public void MutateRegion(Vec2i regionOrigin, Vec2i[] regionPieces)
+    public bool AttemptMutateRegion(Vec2i regionOrigin, Vec2i[] regionPieces)
     {
         ArenaRegion region = new ArenaRegion(regionOrigin, regionPieces);
         foreach (Vec2i regionPiece in regionPieces)
@@ -227,6 +246,16 @@ public class ArenaGrid
             ActivateWall(regionOrigin.x + regionPiece.x, regionOrigin.y + regionPiece.y);
         }
         mutations.Add(region);
+        if (!IsArenaStillConnected())
+        {
+            mutations.Remove(region);
+            foreach (Vec2i regionPiece in regionPieces)
+            {
+                ActivateFloor(regionOrigin.x + regionPiece.x, regionOrigin.y + regionPiece.y);
+            }
+            return false;
+        }
+        return true;
     }
 
 
@@ -248,8 +277,7 @@ public class ArenaGrid
         foreach (var mutationPiecePos in mutationRegion)
         {
             var mutationPosition = mutationPiecePos + mutationOrigin;
-            if ((mutationPosition.x >= width || mutationPosition.x < 0) ||
-                 (mutationPosition.y >= height || mutationPosition.y < 0))
+            if (IsOutOfBounds(mutationPosition.x, mutationPosition.y))
             {
                 return false;
             }
@@ -261,5 +289,51 @@ public class ArenaGrid
             }
         }
         return true;
+    }
+
+    private bool IsOutOfBounds(int x, int y)
+    {
+        return (x >= width || x < 0) || (y >= height || y < 0);
+    }
+
+    public bool IsArenaStillConnected()
+    {
+        /** find a floor tile to start at **/
+        int startX = -1;
+        int startY = -1;
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                if (cells[x, y].floorTile.activeSelf)
+                {
+                    startX = x;
+                    startY = y;
+                    // exit early
+                    x = width;
+                    y = height;
+                }
+            }
+        }
+        UnityEngine.Assertions.Assert.IsTrue(startX != -1 && startY != -1);
+        System.Array.Clear(visitedNodes, 0, visitedNodes.Length);
+        var count = GetConnectedCountRecursive(startX, startY);
+        return floorCellCount == count;
+    }
+
+    private int GetConnectedCountRecursive(int x, int y)
+    {
+        if (IsOutOfBounds(x, y) || cells[x,y].wallTile.activeSelf || visitedNodes[x, y])
+        {
+            return 0;
+        }
+
+        visitedNodes[x, y] = true;
+
+        return 1 +
+               GetConnectedCountRecursive(x + 1, y) +
+               GetConnectedCountRecursive(x, y + 1) +
+               GetConnectedCountRecursive(x - 1, y) +
+               GetConnectedCountRecursive(x, y - 1);
     }
 }
