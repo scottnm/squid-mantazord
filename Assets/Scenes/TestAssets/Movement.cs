@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-	// Update is called once per frame
+    [SerializeField]
+    float speed;
+
 	void FixedUpdate ()
     {
         Vector3 motionVector = InputWrapper.GetLeftStickVector();
-        transform.Translate(motionVector * Time.deltaTime);
+        transform.Translate(motionVector * Time.deltaTime * speed);
 	}
 }

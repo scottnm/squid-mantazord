@@ -11,54 +11,26 @@ public class ArenaGenerator : MonoBehaviour
         public int height;
     }
 
-    public class ArenaGrid
-    {
-        public ArenaCell[,] cells;
-        public int width;
-        public int height;
 
-        public void ActivateFloor(int x, int y)
-        {
-            cells[x, y].floorTile.SetActive(true);
-            cells[x, y].wallTile.SetActive(false);
-        }
-
-        public void ActivateWall(int x, int y)
-        {
-            cells[x, y].floorTile.SetActive(false);
-            cells[x, y].wallTile.SetActive(true);
-        }
-
-        public bool IsWallActive(int x, int y)
-        {
-            return cells[x, y].wallTile.activeSelf;
-        }
-    }
-
-    public struct ArenaCell
-    {
-        public GameObject floorTile;
-        public GameObject wallTile;
-    }
 
     [SerializeField]
-    ArenaDimensions dimensions;
+    private ArenaDimensions dimensions;
     [SerializeField]
-    GameObject floorPrefab;
+    private GameObject floorPrefab;
     [SerializeField]
-    GameObject wallPrefab;
+    private GameObject wallPrefab;
 
-    ArenaGrid arenaGrid;
-    
-	// Use this for initialization
-	void Awake ()
+    private ArenaGrid arenaGrid;
+
+    // Use this for initialization
+    void Awake()
     {
-        Vector2 wallBottomLeftCorner = (Vector2) Camera.main.ScreenToWorldPoint(Vector2.zero) + new Vector2(.5f, .5f);
+        Vector2 wallBottomLeftCorner = (Vector2)Camera.main.ScreenToWorldPoint(Vector2.zero) + new Vector2(.5f, .5f);
         GenerateOuterWall(wallBottomLeftCorner, 0, dimensions.width - 1, 0, dimensions.height - 1);
 
         Vector2 arenaBottomLeftCorner = wallBottomLeftCorner + new Vector2(1, 1);
         arenaGrid = GenerateInnerArena(arenaBottomLeftCorner, 0, dimensions.width - 2, 0, dimensions.height - 2);
-	}
+    }
 
     /*
      * Build the outer wall of the arena
@@ -94,6 +66,7 @@ public class ArenaGenerator : MonoBehaviour
         grid.cells = new ArenaCell[arenaRight - arenaLeft, arenaTop - arenaBottom];
         grid.width = arenaRight - arenaLeft;
         grid.height = arenaTop - arenaBottom;
+        grid.origin = bottomLeftCorner;
 
         var nextPos = bottomLeftCorner;
         for (int y = 0; y < grid.height; ++y)
@@ -111,28 +84,170 @@ public class ArenaGenerator : MonoBehaviour
 
         return grid;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
             MutateMap(arenaGrid);
         }
-	}
-
-    private static readonly Vector2 NullCell = new Vector2(Mathf.Infinity, Mathf.Infinity);
-    private static Vector2 lastPlacedCell = NullCell;
-    private static void MutateMap(ArenaGrid arena)
-    {
-        if (lastPlacedCell != NullCell)
+        else if (Input.GetKeyDown(KeyCode.X))
         {
-            arena.ActivateFloor((int)lastPlacedCell.x, (int)lastPlacedCell.y);
+            arenaGrid.ClearMutations(); 
         }
-        int newX = Random.Range(0, arena.width);
-        int newY = Random.Range(0, arena.height);
-        arena.ActivateWall(newX, newY);
-        lastPlacedCell.x = newX;
-        lastPlacedCell.y = newY;
+    }
+
+    enum Mutation
+    {
+        L_Piece = 0,
+        ThreeByThree,
+        NumMutations
+    }
+
+    private static readonly int MutationCount = 1;
+    private void MutateMap(ArenaGrid arena)
+    {
+        int mutations = 0;
+        while (mutations < MutationCount)
+        {
+            //Mutation nextMutation = (Mutation)Random.Range(0, (int)Mutation.NumMutations);
+            Mutation nextMutation = Mutation.L_Piece;
+            Vec2i[] offsets = GetMutationOffsets(nextMutation);
+            Vec2i randomGridPosition = arenaGrid.RandomCell();
+            if (arena.MutationIsValid(randomGridPosition, offsets))
+            {
+                arena.MutateRegion(randomGridPosition, offsets);
+                mutations += 1;
+            }
+        }
+    }
+
+    private Vec2i[] GetMutationOffsets(Mutation mutation)
+    {
+        Vec2i[] offsets = null;
+        switch (mutation)
+        {
+            case Mutation.L_Piece:
+                offsets = new Vec2i[4];
+                offsets[0] = Vec2i.Zero;
+                offsets[1] = Vec2i.Right;
+                offsets[2] = Vec2i.Up;
+                offsets[3] = Vec2i.Up * 2;
+                break;
+            case Mutation.ThreeByThree:
+                offsets = new Vec2i[9];
+                for (int y = 0; y < 3; ++y)
+                {
+                    for (int x = 0; x < 3; ++x)
+                    {
+                        offsets[y * 3 + x].x = x;
+                        offsets[y * 3 + x].y = y;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return offsets;
+    }
+
+}
+
+public struct ArenaCell
+{
+    public GameObject floorTile;
+    public GameObject wallTile;
+}
+
+public struct ArenaRegion
+{
+    public ArenaRegion(Vec2i origin, Vec2i[] pieces)
+    {
+        this.origin = origin;
+        this.pieces = pieces;
+    }
+
+    public Vec2i[] pieces;
+    public Vec2i origin;
+}
+
+public class ArenaGrid
+{
+    public ArenaCell[,] cells;
+    public int width;
+    public int height;
+    public Vector2 origin;
+    private HashSet<ArenaRegion> mutations;
+
+    public ArenaGrid()
+    {
+        mutations = new HashSet<ArenaRegion>();
+    }
+
+    public void ActivateFloor(int x, int y)
+    {
+        cells[x, y].floorTile.SetActive(true);
+        cells[x, y].wallTile.SetActive(false);
+    }
+
+    public void ActivateWall(int x, int y)
+    {
+        cells[x, y].floorTile.SetActive(false);
+        cells[x, y].wallTile.SetActive(true);
+    }
+
+    public bool IsWallActive(int x, int y)
+    {
+        return cells[x, y].wallTile.activeSelf;
+    }
+
+    public Vec2i RandomCell()
+    {
+        return new Vec2i(Random.Range(0, width), Random.Range(0, height));
+    }
+
+    public void MutateRegion(Vec2i regionOrigin, Vec2i[] regionPieces)
+    {
+        ArenaRegion region = new ArenaRegion(regionOrigin, regionPieces);
+        foreach (Vec2i regionPiece in regionPieces)
+        {
+            ActivateWall(regionOrigin.x + regionPiece.x, regionOrigin.y + regionPiece.y);
+        }
+        mutations.Add(region);
+    }
+
+
+    public void ClearMutations()
+    {
+        foreach (ArenaRegion region in mutations)
+        {
+            foreach (Vec2i piece in region.pieces)
+            {
+                ActivateFloor(region.origin.x + piece.x, region.origin.y + piece.y);
+            }
+        }
+        mutations.Clear();
+    }
+
+    public bool MutationIsValid(Vec2i mutationOrigin, Vec2i[] mutationRegion)
+    {
+        LayerMask playerAndEnemyMask = LayerMask.GetMask("Player", "Enemy");
+        foreach (var mutationPiecePos in mutationRegion)
+        {
+            var mutationPosition = mutationPiecePos + mutationOrigin;
+            if ((mutationPosition.x >= width || mutationPosition.x < 0) ||
+                 (mutationPosition.y >= height || mutationPosition.y < 0))
+            {
+                return false;
+            }
+
+            var potentialWallPos = mutationPosition + origin; 
+            if (Physics2D.BoxCast(potentialWallPos, new Vector2(1, 1), 0, Vector2.zero, 0, playerAndEnemyMask))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
