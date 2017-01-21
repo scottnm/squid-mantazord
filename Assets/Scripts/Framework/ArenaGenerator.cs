@@ -11,8 +11,6 @@ public class ArenaGenerator : MonoBehaviour
         public int height;
     }
 
-
-
     [SerializeField]
     private ArenaDimensions dimensions;
     [SerializeField]
@@ -62,11 +60,7 @@ public class ArenaGenerator : MonoBehaviour
 
     private ArenaGrid GenerateInnerArena(Vector2 bottomLeftCorner, int arenaLeft, int arenaRight, int arenaBottom, int arenaTop)
     {
-        ArenaGrid grid = new ArenaGrid();
-        grid.cells = new ArenaCell[arenaRight - arenaLeft, arenaTop - arenaBottom];
-        grid.width = arenaRight - arenaLeft;
-        grid.height = arenaTop - arenaBottom;
-        grid.origin = bottomLeftCorner;
+        ArenaGrid grid = new ArenaGrid(bottomLeftCorner, arenaRight - arenaLeft, arenaTop - arenaBottom);
 
         var nextPos = bottomLeftCorner;
         for (int y = 0; y < grid.height; ++y)
@@ -101,7 +95,10 @@ public class ArenaGenerator : MonoBehaviour
     enum Mutation
     {
         L_Piece = 0,
-        ThreeByThree,
+        Flat,
+        Square,
+        S_Piece,
+        T_Piece,
         NumMutations
     }
 
@@ -111,8 +108,7 @@ public class ArenaGenerator : MonoBehaviour
         int mutations = 0;
         while (mutations < MutationCount)
         {
-            //Mutation nextMutation = (Mutation)Random.Range(0, (int)Mutation.NumMutations);
-            Mutation nextMutation = Mutation.L_Piece;
+            Mutation nextMutation = (Mutation)Random.Range(0, (int)Mutation.NumMutations);
             Vec2i[] offsets = GetMutationOffsets(nextMutation);
             Vec2i randomGridPosition = arenaGrid.RandomCell();
             if (arena.MutationIsValid(randomGridPosition, offsets))
@@ -125,26 +121,38 @@ public class ArenaGenerator : MonoBehaviour
 
     private Vec2i[] GetMutationOffsets(Mutation mutation)
     {
-        Vec2i[] offsets = null;
+        Vec2i[] offsets = new Vec2i[4];
         switch (mutation)
         {
             case Mutation.L_Piece:
-                offsets = new Vec2i[4];
+                offsets[0] = Vec2i.Zero;
+                offsets[2] = Vec2i.Down;
+                offsets[3] = Vec2i.Down * 2;
+                offsets[1] = Vec2i.Down * 2 + Vec2i.Right;
+                break;
+            case Mutation.Flat:
                 offsets[0] = Vec2i.Zero;
                 offsets[1] = Vec2i.Right;
-                offsets[2] = Vec2i.Up;
-                offsets[3] = Vec2i.Up * 2;
+                offsets[2] = Vec2i.Right * 2;
+                offsets[3] = Vec2i.Right * 3;
                 break;
-            case Mutation.ThreeByThree:
-                offsets = new Vec2i[9];
-                for (int y = 0; y < 3; ++y)
-                {
-                    for (int x = 0; x < 3; ++x)
-                    {
-                        offsets[y * 3 + x].x = x;
-                        offsets[y * 3 + x].y = y;
-                    }
-                }
+            case Mutation.Square:
+                offsets[0] = Vec2i.Zero;
+                offsets[1] = Vec2i.Right;
+                offsets[2] = Vec2i.Down;
+                offsets[3] = Vec2i.Down + Vec2i.Right;
+                break;
+            case Mutation.S_Piece:
+                offsets[0] = Vec2i.Zero;
+                offsets[1] = Vec2i.Down;
+                offsets[2] = Vec2i.Down + Vec2i.Right;
+                offsets[3] = Vec2i.Down * 2 + Vec2i.Right;
+                break;
+            case Mutation.T_Piece:
+                offsets[0] = Vec2i.Zero;
+                offsets[1] = Vec2i.Right;
+                offsets[2] = Vec2i.Right * 2;
+                offsets[3] = Vec2i.Right + Vec2i.Down;
                 break;
             default:
                 break;
@@ -174,14 +182,18 @@ public struct ArenaRegion
 
 public class ArenaGrid
 {
-    public ArenaCell[,] cells;
     public int width;
     public int height;
+    public ArenaCell[,] cells;
     public Vector2 origin;
     private HashSet<ArenaRegion> mutations;
 
-    public ArenaGrid()
+    public ArenaGrid(Vector2 origin, int width, int height)
     {
+        this.width = width;
+        this.height = height;
+        cells = new ArenaCell[width, height];
+        this.origin = origin;
         mutations = new HashSet<ArenaRegion>();
     }
 
