@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 175911812}
   - component: {fileID: 175911811}
   m_Layer: 0
-  m_Name: GridGenerator
+  m_Name: ArenaGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,8 +118,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba075c7c35133684ebc065b1352e3788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 949181252}
-  prefab: {fileID: 1966453924456030, guid: de9ab0465f6e2c248a12c1b2b942e45d, type: 2}
+  dimensions:
+    width: 24
+    height: 15
+  floorPrefab: {fileID: 1966453924456030, guid: 8d8ef3b388b4b0e409939c0a787f75bc,
+    type: 2}
+  wallPrefab: {fileID: 1966453924456030, guid: de9ab0465f6e2c248a12c1b2b942e45d, type: 2}
 --- !u!4 &175911812
 Transform:
   m_ObjectHideFlags: 0
