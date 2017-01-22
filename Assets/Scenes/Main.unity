@@ -381,21 +381,21 @@ MonoBehaviour:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 2
-          time: -0.0049668876
-          value: 0.53749996
-          inSlope: 0.46021423
-          outSlope: 0.46021423
+          time: 0
+          value: 0.2
+          inSlope: 0.79367405
+          outSlope: 0.79367405
           tangentMode: 34
         - serializedVersion: 2
-          time: 1
-          value: 1
-          inSlope: 0.46021423
-          outSlope: 0.46021423
+          time: 0.98585606
+          value: 0.98244834
+          inSlope: 0.79367405
+          outSlope: 0.79367405
           tangentMode: 34
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 0
-      spawnTime: 20
+      spawnTime: 15
     - enemySpec:
         numberPuffers: 10
       additionalSpawns: 2
