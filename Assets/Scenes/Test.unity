@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 21124446}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemies
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,56 +452,6 @@ Prefab:
     - target: {fileID: 4511306846200306, guid: 306c02b60024d454098798e185a1dcda, type: 2}
       propertyPath: m_RootOrder
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 212714120570968008, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212714120570968008, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212067993187597916, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212208203476061266, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212951762631554798, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212489152356464914, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212041766650948698, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212284263554251200, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212707382451358902, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
-      objectReference: {fileID: 0}
-    - target: {fileID: 212704476597303554, guid: 306c02b60024d454098798e185a1dcda,
-        type: 2}
-      propertyPath: m_SortingLayerID
-      value: 668998043
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 306c02b60024d454098798e185a1dcda, type: 2}

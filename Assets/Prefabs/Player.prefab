@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4583683300661130}
   - component: {fileID: 212704476597303554}
   - component: {fileID: 61875774449123122}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_MR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4557282461414752}
   - component: {fileID: 212489152356464914}
   - component: {fileID: 61383492597954910}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_UL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 4782452675933822}
   - component: {fileID: 212041766650948698}
   - component: {fileID: 61638545021467444}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_ML
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 4476148844817318}
   - component: {fileID: 212707382451358902}
   - component: {fileID: 61019177619750538}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_BC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 4513224483124216}
   - component: {fileID: 212067993187597916}
   - component: {fileID: 61486335777994376}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_BL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 4226284338097068}
   - component: {fileID: 212208203476061266}
   - component: {fileID: 61121128824900256}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_UC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 4599171165358278}
   - component: {fileID: 212951762631554798}
   - component: {fileID: 61321536298938570}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_UR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 4063694065696874}
   - component: {fileID: 212284263554251200}
   - component: {fileID: 61348324583456646}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Harpoon_BR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +350,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -364,7 +364,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -378,7 +378,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -392,7 +392,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -406,7 +406,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -420,7 +420,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -448,7 +448,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -462,7 +462,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 1}
   serializedVersion: 2
@@ -492,6 +492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   retractedArm: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   extendedArm: {fileID: 21300002, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
+  harpoonName: 
 --- !u!212 &212041766650948698
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -521,7 +522,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -556,7 +557,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -591,7 +592,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -626,7 +627,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -661,7 +662,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -696,7 +697,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -731,7 +732,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -766,8 +767,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: 668998043
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: ed34c2753797e43bea816ad33a5b2cb8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -801,7 +802,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: 668998043
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
