@@ -24,7 +24,9 @@ public class EnemyPool : MonoBehaviour
 
             for (int i = 0; i < enemiesPerPool; ++i)
             {
-                free.Add(Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity, parent));
+                var newEnemy = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity, parent);
+                newEnemy.SetActive(false);
+                free.Add(newEnemy);
             }
         }
 
