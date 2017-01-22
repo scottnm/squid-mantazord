@@ -129,6 +129,9 @@ public class HarpoonAttackScript : MonoBehaviour
 
 		else if (harpoonState == "attack")
 		{
+			//BoxCollider2D bcA = activeHarpoon.GetComponent<BoxCollider2D>();
+			//if ()
+
 			extendedArmValue -= Time.deltaTime;
 
 			if (extendedArmValue <= 0)
@@ -144,5 +147,12 @@ public class HarpoonAttackScript : MonoBehaviour
 				extendedArmValue = extendedArmDuration;
 			}
 		}
+	}
+
+	void OnTriggerEnter2D (Collider2D otherCollider)
+	{
+		GameObject otherGO = otherCollider.gameObject;
+		EnemyDieScript eds = otherGO.GetComponent<EnemyDieScript>();
+		eds.Die();
 	}
 }
