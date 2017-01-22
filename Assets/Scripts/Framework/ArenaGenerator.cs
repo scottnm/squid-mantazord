@@ -99,7 +99,7 @@ public class ArenaGenerator : MonoBehaviour
                 grid.cells[x, y].floorTile = Instantiate(floorPrefab, nextPos, Quaternion.identity, transform);
                 grid.cells[x, y].floorTile.SetActive(false);
                 grid.cells[x, y].wallTile = Instantiate(wallPrefab, nextPos, Quaternion.identity, transform);
-                grid.cells[x, y].wallTile.SetActive(false);
+                grid.cells[x, y].wallEnabled(false);
                 grid.cells[x, y].spawnTile = Instantiate(spawnPrefab, nextPos, Quaternion.identity, transform);
                 grid.cells[x, y].spawnTile.SetActive(false);
                 grid.ActivateFloor(x, y);
@@ -153,6 +153,8 @@ public class ArenaGenerator : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log("MutationAttempts = " + mutationAttempts);
     }
 
     private Vec2i[] GetMutationOffsets(Mutation mutation)
@@ -203,6 +205,19 @@ public struct ArenaCell
     public GameObject floorTile;
     public GameObject wallTile;
     public GameObject spawnTile;
+    private bool _wallEnabled;
+
+    public void wallEnabled(bool enabled)
+    {
+        wallTile.GetComponent<SpriteRenderer>().enabled = enabled;
+        wallTile.GetComponent<BoxCollider2D>().enabled = enabled;
+        _wallEnabled = enabled;
+    }
+
+    public bool IsWallEnabled()
+    {
+        return _wallEnabled;
+    }
 }
 
 public struct ArenaRegion
@@ -241,24 +256,22 @@ public class ArenaGrid
 
     public void ActivateFloor(int x, int y)
     {
-        var cell = cells[x, y];
-        if (! cell.floorTile.activeSelf)
+        if (! cells[x,y].floorTile.activeSelf)
         {
             floorCellCount += 1;
         }
-        cell.floorTile.SetActive(true);
-        cell.wallTile.SetActive(false);
+        cells[x,y].floorTile.SetActive(true);
+        cells[x,y].wallEnabled(false);
     }
 
     public void ActivateWall(int x, int y)
     {
-        var cell = cells[x, y];
-        if (cell.floorTile.activeSelf)
+        if (cells[x,y].floorTile.activeSelf)
         {
             floorCellCount -= 1;
         }
-        cell.floorTile.SetActive(false);
-        cell.wallTile.SetActive(true);
+        cells[x,y].floorTile.SetActive(false);
+        cells[x,y].wallEnabled(true);
     }
 
     public void AddSpawnPoints(int numPoints)
@@ -268,7 +281,7 @@ public class ArenaGrid
         {
             Vec2i randomPos = RandomCell();
             ArenaCell randomCell = cells[randomPos.x, randomPos.y];
-            if (! randomCell.wallTile.activeSelf &&
+            if (! randomCell.IsWallEnabled() &&
                 ! randomCell.spawnTile.activeSelf)
             {
                 randomCell.spawnTile.SetActive(true);
@@ -298,11 +311,6 @@ public class ArenaGrid
         int spawnIndex = Random.Range(0, spawnPoints.Count);
         Vec2i spawnCellPos = spawnPoints[spawnIndex];
         return cells[spawnCellPos.x, spawnCellPos.y].spawnTile.transform.position;
-    }
-
-    public bool IsWallActive(int x, int y)
-    {
-        return cells[x, y].wallTile.activeSelf;
     }
 
     public bool IsSpawnActive(int x, int y)
@@ -400,7 +408,7 @@ public class ArenaGrid
 
     private int GetConnectedCountRecursive(int x, int y)
     {
-        if (IsOutOfBounds(x, y) || cells[x,y].wallTile.activeSelf || visitedNodes[x, y])
+        if (IsOutOfBounds(x, y) || cells[x,y].IsWallEnabled() || visitedNodes[x, y])
         {
             return 0;
         }
