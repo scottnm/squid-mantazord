@@ -7,7 +7,6 @@ public class EnemyDieScript : MonoBehaviour
 
 	public void Die ()
 	{
-		Debug.Log("woah mama");
 		gameObject.SetActive(false);
 	}
 

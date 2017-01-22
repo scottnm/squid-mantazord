@@ -116,8 +116,8 @@ public class HarpoonAttackScript : MonoBehaviour
 				var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
 				if (!Physics2D.Raycast(transform.position, forwardVector, 1.5f, LayerMask.GetMask("Wall")))
 				{
-					BoxCollider2D bcA = activeHarpoon.GetComponent<BoxCollider2D>();
-					bcA.enabled = true;
+					//BoxCollider2D bcA = activeHarpoon.GetComponent<BoxCollider2D>();
+					//bcA.enabled = true;
 
 					SpriteRenderer srA = activeHarpoon.GetComponent<SpriteRenderer>();
 					srA.sprite = extendedArm;
@@ -129,17 +129,20 @@ public class HarpoonAttackScript : MonoBehaviour
 
 		else if (harpoonState == "attack")
 		{
-			//BoxCollider2D bcA = activeHarpoon.GetComponent<BoxCollider2D>();
-			//if ()
+			var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
+			RaycastHit2D hit = Physics2D.Raycast(anchorObject.transform.position, forwardVector, 2f, LayerMask.GetMask("Enemy"));
+
+			if (hit.collider != null)
+			{
+				GameObject hitGO = hit.collider.gameObject;
+				EnemyDieScript eds = hitGO.GetComponent<EnemyDieScript>();
+				eds.Die();
+			}
 
 			extendedArmValue -= Time.deltaTime;
 
 			if (extendedArmValue <= 0)
 			{
-				//deactivate activeHarpoon
-				BoxCollider2D bcD = activeHarpoon.GetComponent<BoxCollider2D>();
-				bcD.enabled = false;
-
 				SpriteRenderer srD = activeHarpoon.GetComponent<SpriteRenderer>();
 				srD.sprite = retractedArm;
 
@@ -147,12 +150,5 @@ public class HarpoonAttackScript : MonoBehaviour
 				extendedArmValue = extendedArmDuration;
 			}
 		}
-	}
-
-	void OnTriggerEnter2D (Collider2D otherCollider)
-	{
-		GameObject otherGO = otherCollider.gameObject;
-		EnemyDieScript eds = otherGO.GetComponent<EnemyDieScript>();
-		eds.Die();
 	}
 }
