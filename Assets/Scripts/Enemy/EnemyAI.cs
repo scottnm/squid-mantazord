@@ -56,13 +56,16 @@ public class EnemyAI : MonoBehaviour
     private Vector2 movementVector;
     [SerializeField]
     private GameStateEvaluation currentState;
-    private GameObject player;
+    private static GameObject player = null;
 
 	private void Start ()
     {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag(Tags.Player);
+        }
         facingVector = Vector2.up;
         movementVector = Vector2.up;
-        player = GameObject.FindGameObjectWithTag(Tags.Player);
         aiCooldownTimer = aiCooldownTime;
 	}
 	
@@ -124,10 +127,6 @@ public class EnemyAI : MonoBehaviour
             distanceToPlayer, LayerMask.GetMask("Wall")) &&
             Mathf.Abs(Vector2.Angle(facingVector, currentState.directionToPlayer)) < 90f;
         currentState.tilePos = Vec2i.toVec2i((Vector2)transform.position - grid.origin);
-
-        var x = currentState.tilePos.x;
-        var y = currentState.tilePos.y;
-
 
         float raycastDistance = 1.1f;
 
