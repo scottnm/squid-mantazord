@@ -17,6 +17,8 @@ public class ArenaGenerator : MonoBehaviour
     private GameObject floorPrefab;
     [SerializeField]
     private GameObject wallPrefab;
+    [SerializeField]
+    private GameObject spawnPrefab;
 
     private static ArenaGrid arenaGrid;
     public static ArenaGrid GetGridInstance()
@@ -32,6 +34,29 @@ public class ArenaGenerator : MonoBehaviour
 
         Vector2 arenaBottomLeftCorner = wallBottomLeftCorner + new Vector2(1, 1);
         arenaGrid = GenerateInnerArena(arenaBottomLeftCorner, 0, dimensions.width - 2, 0, dimensions.height - 2);
+    }
+
+    private void Start()
+    {
+        Events.OnEndAct += OnEndAct;
+        Events.OnWaveStart += OnWaveStart;
+    }
+
+    private void OnDestroy()
+    {
+        Events.OnEndAct -= OnEndAct;
+        Events.OnWaveStart -= OnWaveStart;
+    }
+
+    private void OnEndAct()
+    {
+        arenaGrid.ClearSpawnPoints();
+    }
+
+    private void OnWaveStart()
+    {
+        arenaGrid.ClearMutations();
+        MutateMap(arenaGrid);
     }
 
     /*
@@ -75,15 +100,14 @@ public class ArenaGenerator : MonoBehaviour
                 grid.cells[x, y].floorTile.SetActive(false);
                 grid.cells[x, y].wallTile = Instantiate(wallPrefab, nextPos, Quaternion.identity, transform);
                 grid.cells[x, y].wallTile.SetActive(false);
+                grid.cells[x, y].spawnTile = Instantiate(spawnPrefab, nextPos, Quaternion.identity, transform);
+                grid.cells[x, y].spawnTile.SetActive(false);
                 grid.ActivateFloor(x, y);
                 nextPos.x += 1;
             }
             nextPos.x = bottomLeftCorner.x;
             nextPos.y += 1;
         }
-
-        MutateMap(grid);
-
         return grid;
     }
 
@@ -178,6 +202,7 @@ public struct ArenaCell
 {
     public GameObject floorTile;
     public GameObject wallTile;
+    public GameObject spawnTile;
 }
 
 public struct ArenaRegion
@@ -201,6 +226,7 @@ public class ArenaGrid
     private HashSet<ArenaRegion> mutations;
     private int floorCellCount = 0;
     private bool[,] visitedNodes;
+    private List<Vec2i> spawnPoints;
 
     public ArenaGrid(Vector2 origin, int width, int height)
     {
@@ -210,6 +236,7 @@ public class ArenaGrid
         this.origin = origin;
         mutations = new HashSet<ArenaRegion>();
         visitedNodes = new bool[width, height];
+        spawnPoints = new List<Vec2i>(10);
     }
 
     public void ActivateFloor(int x, int y)
@@ -234,9 +261,53 @@ public class ArenaGrid
         cell.wallTile.SetActive(true);
     }
 
+    public void AddSpawnPoints(int numPoints)
+    {
+        int numAttempts = 100;
+        while(numPoints > 0 && --numAttempts > 0)
+        {
+            Vec2i randomPos = RandomCell();
+            ArenaCell randomCell = cells[randomPos.x, randomPos.y];
+            if (! randomCell.wallTile.activeSelf &&
+                ! randomCell.spawnTile.activeSelf)
+            {
+                randomCell.spawnTile.SetActive(true);
+                spawnPoints.Add(randomPos);
+                --numPoints;
+            }
+        }
+
+        if (numAttempts == 0)
+        {
+            Debug.LogError("ArenaGrid::AddSpawnPoints - Failed to add <" + numPoints + "> spawn points");
+        }
+    }
+
+    public void ClearSpawnPoints()
+    {
+        foreach (Vec2i spawnPointPos in spawnPoints)
+        {
+            cells[spawnPointPos.x, spawnPointPos.y].spawnTile.SetActive(false);
+        }
+        spawnPoints.Clear();
+        UnityEngine.Assertions.Assert.IsTrue(spawnPoints.Count == 0);
+    }
+
+    public Vector2 GetRandomSpawn()
+    {
+        int spawnIndex = Random.Range(0, spawnPoints.Count);
+        Vec2i spawnCellPos = spawnPoints[spawnIndex];
+        return cells[spawnCellPos.x, spawnCellPos.y].spawnTile.transform.position;
+    }
+
     public bool IsWallActive(int x, int y)
     {
         return cells[x, y].wallTile.activeSelf;
+    }
+
+    public bool IsSpawnActive(int x, int y)
+    {
+        return cells[x, y].spawnTile.activeSelf;
     }
 
     public Vec2i RandomCell()
@@ -283,7 +354,7 @@ public class ArenaGrid
         foreach (var mutationPiecePos in mutationRegion)
         {
             var mutationPosition = mutationPiecePos + mutationOrigin;
-            if (IsOutOfBounds(mutationPosition.x, mutationPosition.y))
+            if (IsOutOfBounds(mutationPosition.x, mutationPosition.y) || IsSpawnActive(mutationPosition.x, mutationPosition.y))
             {
                 return false;
             }
@@ -300,11 +371,6 @@ public class ArenaGrid
     private bool IsOutOfBounds(int x, int y)
     {
         return (x >= width || x < 0) || (y >= height || y < 0);
-    }
-
-    public bool IsWalkableTile(int x, int y)
-    {
-        return !IsOutOfBounds(x, y) && !cells[x, y].wallTile.activeSelf;
     }
 
     public bool IsArenaStillConnected()

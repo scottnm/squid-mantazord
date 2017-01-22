@@ -8,6 +8,7 @@ public class EnemyDieScript : MonoBehaviour
 	public void Die ()
 	{
 		gameObject.SetActive(false);
+        Events.EnemyDies(gameObject);
 	}
 
 }
