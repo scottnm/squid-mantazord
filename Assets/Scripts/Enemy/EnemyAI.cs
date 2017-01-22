@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    public delegate void PursueStartListener();
+    public event PursueStartListener OnPursueStart;
+
+    public delegate void PursueEndListener();
+    public event PursueEndListener OnPursueEnd;
+
     enum AiAction
     {
         Pursue,
@@ -78,11 +84,20 @@ public class EnemyAI : MonoBehaviour
             EvaluteGameState();
             var previousAction = currentAction;
             currentAction = Act(currentState);
-            if (previousAction == AiAction.Pursue && currentAction != AiAction.Pursue)
+            if ((previousAction != AiAction.Pursue && currentAction == AiAction.Pursue) &&
+                OnPursueStart != null)
+            {
+                OnPursueStart();
+            }
+            else if (previousAction == AiAction.Pursue && currentAction != AiAction.Pursue)
             {
                 var angle = Vector2.Angle(Vector2.up, facingVector);
                 var snappedAngle = Mathf.Round(angle / 90) * 90f;
                 facingVector = Quaternion.Euler(0, 0, snappedAngle) * Vector2.up;
+                if (OnPursueEnd != null)
+                {
+                    OnPursueEnd();
+                }
             }
             switch (currentAction)
             {
