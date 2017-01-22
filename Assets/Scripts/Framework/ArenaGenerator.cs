@@ -18,7 +18,11 @@ public class ArenaGenerator : MonoBehaviour
     [SerializeField]
     private GameObject wallPrefab;
 
-    private ArenaGrid arenaGrid;
+    private static ArenaGrid arenaGrid;
+    public static ArenaGrid GetGridInstance()
+    {
+        return arenaGrid;
+    }
 
     // Use this for initialization
     void Awake()
@@ -294,6 +298,11 @@ public class ArenaGrid
     private bool IsOutOfBounds(int x, int y)
     {
         return (x >= width || x < 0) || (y >= height || y < 0);
+    }
+
+    public bool IsWalkableTile(int x, int y)
+    {
+        return !IsOutOfBounds(x, y) && !cells[x, y].wallTile.activeSelf;
     }
 
     public bool IsArenaStillConnected()

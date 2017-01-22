@@ -17,6 +17,11 @@ public struct Vec2i
     public static Vec2i Left = new Vec2i(-1, 0);
     public static Vec2i Right = new Vec2i(1, 0);
 
+    public static Vec2i toVec2i(Vector2 a)
+    {
+        return new Vec2i((int)a.x, (int)a.y);
+    }
+
     public static Vec2i operator *(Vec2i a, int scale)
     {
         return new Vec2i(a.x * scale, a.y * scale);
