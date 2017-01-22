@@ -82,6 +82,8 @@ public class ArenaGenerator : MonoBehaviour
             nextPos.y += 1;
         }
 
+        MutateMap(grid);
+
         return grid;
     }
 
@@ -118,7 +120,7 @@ public class ArenaGenerator : MonoBehaviour
         {
             Mutation nextMutation = (Mutation)Random.Range(0, (int)Mutation.NumMutations);
             Vec2i[] offsets = GetMutationOffsets(nextMutation);
-            Vec2i randomGridPosition = arenaGrid.RandomCell();
+            Vec2i randomGridPosition = arena.RandomCell();
             if (arena.MutationIsValid(randomGridPosition, offsets))
             {
                 if (arena.AttemptMutateRegion(randomGridPosition, offsets))
