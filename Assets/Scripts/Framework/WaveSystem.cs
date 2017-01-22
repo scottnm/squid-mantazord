@@ -82,7 +82,7 @@ public class WaveSystem : MonoBehaviour
 
     IEnumerator BeginInitialWave()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         StartCoroutine(LaunchWave(0, 0));
     }
 
@@ -96,8 +96,11 @@ public class WaveSystem : MonoBehaviour
             yield break;
         }
 
+        yield return Camera.main.gameObject.GetComponent<ScreenShake>().Shake();
         numEnemiesKilled = 0;
         Events.StartWave();
+
+        //yield return new WaitForSeconds(1.5f);
         float time = 0;
         WaveSpecification waveSpec = currentAct.waveSpecs[wavenumber];
         ArenaGenerator.GetGridInstance().AddSpawnPoints(waveSpec.additionalSpawns);
