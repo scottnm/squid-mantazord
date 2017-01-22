@@ -125,10 +125,6 @@ public class EnemyAI : MonoBehaviour
             Mathf.Abs(Vector2.Angle(facingVector, currentState.directionToPlayer)) < 90f;
         currentState.tilePos = Vec2i.toVec2i((Vector2)transform.position - grid.origin);
 
-        var x = currentState.tilePos.x;
-        var y = currentState.tilePos.y;
-
-
         float raycastDistance = 1.1f;
 
         currentState.canMoveForward = ! Physics2D.Raycast(transform.position, facingVector, raycastDistance, LayerMask.GetMask("Wall"));
