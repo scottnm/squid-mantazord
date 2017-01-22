@@ -125,11 +125,13 @@ public class PlayerHealthScript : MonoBehaviour
 			{
 				health -= 1;
 				playerState = "hurt";
+                Events.PlayerDamaged();
 			}
 
 			if (health <= 0)
 			{
 				gameObject.SetActive(false);
+                Events.PlayerDies();
 			}
 		}
 	}
