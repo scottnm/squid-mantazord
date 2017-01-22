@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4827711482422094}
   - component: {fileID: 212642195345840346}
   - component: {fileID: 61142093590718152}
+  - component: {fileID: 114945708875349310}
   m_Layer: 10
   m_Name: WallPrefab
   m_TagString: Untagged
@@ -55,6 +56,23 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &114945708875349310
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1966453924456030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd981d42475d56841857146b01ff618b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorTransitionTime: 1.5
+  colors:
+  - {r: 0.453, g: 0.69310343, b: 1, a: 1}
+  - {r: 0.3930441, g: 0.86764705, b: 0.65826344, a: 1}
+  - {r: 0.9191176, g: 0.8821502, b: 0.4163603, a: 1}
+  - {r: 0.9558824, g: 0.50221777, b: 0.43301466, a: 1}
 --- !u!212 &212642195345840346
 SpriteRenderer:
   m_ObjectHideFlags: 1
