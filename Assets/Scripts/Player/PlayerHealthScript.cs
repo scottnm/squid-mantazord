@@ -4,132 +4,75 @@ using UnityEngine;
 
 public class PlayerHealthScript : MonoBehaviour
 {
-	public int health = 3;
-	public string playerState = "healthy";
-	public float hitFrameDuration = 2f;
-	public float hitFrameValue;
+    enum PlayerState
+    {
+       Healthy,
+       Hurt,
+       Dead 
+    }
 
-	SpriteRenderer srHarpoonUL;
-	SpriteRenderer srHarpoonUC;
-	SpriteRenderer srHarpoonUR;
-	SpriteRenderer srHarpoonML;
-	SpriteRenderer srHarpoonMR;
-	SpriteRenderer srHarpoonBL;
-	SpriteRenderer srHarpoonBC;
-	SpriteRenderer srHarpoonBR;
+    [SerializeField]
+    private int maxHealth;
+	private int health;
+	private float hitFrameDuration = 2f;
+	private PlayerState state;
+	private float hitFrameValue;
+    private SpriteRenderer[] renderers;
 
-	// Use this for initialization
 	void Start ()
 	{
-		hitFrameValue = hitFrameDuration;
-
-		foreach (Transform i in transform)
-		{
-			if (i.name == "Anchor")
-			{
-				foreach (Transform j in i.transform)
-				{
-					if (j.name == "Harpoon_UL")
-					{
-						srHarpoonUL = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_UC")
-					{
-						srHarpoonUC = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_UR")
-					{
-						srHarpoonUR = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_ML")
-					{
-						srHarpoonML = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_MR")
-					{
-						srHarpoonMR = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_BL")
-					{
-						srHarpoonBL = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_BC")
-					{
-						srHarpoonBC = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-					else if (j.name == "Harpoon_BR")
-					{
-						srHarpoonBR = j.gameObject.GetComponent<SpriteRenderer>();
-					}
-				}
-			}
-		}
+        Reset();
+        renderers = GetComponentsInChildren<SpriteRenderer>(true);
 	}
 
-	// Update is called once per frame
+    private void Reset()
+    {
+        state = PlayerState.Healthy;
+        health = maxHealth;
+        hitFrameValue = hitFrameDuration;
+    }
+
 	void Update ()
 	{
-		if (playerState == "hurt")
+		if (state == PlayerState.Hurt)
 		{
 			hitFrameValue -= Time.deltaTime;
 			float y = Mathf.Cos(8 * Mathf.PI * hitFrameValue);
-			if (y >= 0)
-			{
-				gameObject.GetComponent<SpriteRenderer>().enabled = true;
-				srHarpoonUL.enabled = true;
-				srHarpoonUC.enabled = true;
-				srHarpoonUR.enabled = true;
-				srHarpoonML.enabled = true;
-				srHarpoonMR.enabled = true;
-				srHarpoonBL.enabled = true;
-				srHarpoonBC.enabled = true;
-				srHarpoonBR.enabled = true;
-			}
-			else
-			{
-				gameObject.GetComponent<SpriteRenderer>().enabled = false;
-				srHarpoonUL.enabled = false;
-				srHarpoonUC.enabled = false;
-				srHarpoonUR.enabled = false;
-				srHarpoonML.enabled = false;
-				srHarpoonMR.enabled = false;
-				srHarpoonBL.enabled = false;
-				srHarpoonBC.enabled = false;
-				srHarpoonBR.enabled = false;
-			}
-
-			if (hitFrameValue <= 0)
+            bool hurtTimerUp = hitFrameValue <= 0;
+            SetRenderers(y >= 0 || hurtTimerUp);
+			if (hurtTimerUp)
 			{
 				hitFrameValue = hitFrameDuration;
-				gameObject.GetComponent<SpriteRenderer>().enabled = true;
-				srHarpoonUL.enabled = true;
-				srHarpoonUC.enabled = true;
-				srHarpoonUR.enabled = true;
-				srHarpoonML.enabled = true;
-				srHarpoonMR.enabled = true;
-				srHarpoonBL.enabled = true;
-				srHarpoonBC.enabled = true;
-				srHarpoonBR.enabled = true;
-				playerState = "healthy";
+                state = PlayerState.Healthy;
 			}
 		}
 	}
 
+    private void SetRenderers(bool enabled)
+    {
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            renderer.enabled = enabled;
+        }
+    }
+
 	void OnCollisionStay2D (Collision2D otherCollider)
 	{
-		if (playerState == "healthy")
+		if (state == PlayerState.Healthy)
 		{
 			GameObject otherGO = otherCollider.collider.gameObject;
 
-			if (otherGO.tag == "Enemy")
+			if (otherGO.tag == Tags.Enemy)
 			{
 				health -= 1;
-				playerState = "hurt";
+				state = PlayerState.Hurt;
+                Events.PlayerDamaged();
 			}
 
 			if (health <= 0)
 			{
-				gameObject.SetActive(false);
+                gameObject.SetActive(false);
+                Events.PlayerDies();
 			}
 		}
 	}
