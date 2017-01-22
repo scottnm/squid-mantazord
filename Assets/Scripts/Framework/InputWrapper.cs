@@ -26,6 +26,11 @@ public class InputWrapper
         return new Vector2(Input.GetAxis(LeftStickX), Input.GetAxis(LeftStickY)).normalized;
     }
 
+    public static Vector2 GetRightStickVector()
+    {
+        return new Vector2(Input.GetAxis(RightStickX), Input.GetAxis(RightStickY));
+    }
+
     public static StickState GetRightStick()
     {
         return GetStickState(Input.GetAxis(RightStickX), Input.GetAxis(RightStickY));
@@ -38,9 +43,13 @@ public class InputWrapper
             return StickState.Center;
         }
 
-        float angle = Mathf.Acos(stickX) * 180 / Mathf.PI;
+        Vector2 xy = new Vector2(stickX, stickY).normalized;
+        var x = xy.x;
+        var y = xy.y;
 
-        if (stickY < -Mathf.Epsilon)
+        float angle = Mathf.Acos(x) * 180 / Mathf.PI;
+
+        if (y < -Mathf.Epsilon)
         {
             angle = -angle;
         }
