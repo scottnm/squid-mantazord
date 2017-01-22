@@ -4,143 +4,105 @@ using UnityEngine;
 
 public class HarpoonAttackScript : MonoBehaviour
 {
-	GameObject activeHarpoon = null;
-	GameObject anchorObject = null;
-	public Sprite retractedArm;
-	public Sprite extendedArm;
+    GameObject anchorObject = null;
+    GameObject activeHarpoon = null;
+    GameObject[] harpoonMap;
+    
+    [SerializeField]
+    private Sprite retractedArm;
+    [SerializeField]
+    private Sprite extendedArm;
 
-	string harpoonState = "rest";
-	float extendedArmDuration = .25f;
-	float extendedArmValue;
-	float cooldownDuration = .2f;
-	float cooldownValue;
+    enum HarpoonState
+    {
+        Rest,
+        Cooldown,
+        Attack
+    }
 
-	void Start()
-	{
-		extendedArmValue = extendedArmDuration;
-		cooldownValue = cooldownDuration;
+    private HarpoonState harpoonState;
+    private float extendedArmDuration = .25f;
+    private float extendedArmValue;
+    private float cooldownDuration = .2f;
+    private float cooldownValue;
 
-		foreach (Transform ct in transform)
-		{
-			if (ct.gameObject.name == "Anchor")
-			{
-				anchorObject = ct.gameObject;
-			}
-		}
+    void Start()
+    {
+        anchorObject = transform.GetChild(0).gameObject;
+        UnityEngine.Assertions.Assert.IsTrue(anchorObject.name == "Anchor");
 
-		foreach (Transform ct in anchorObject.transform)
-		{
-			if (ct.gameObject.name == "Harpoon_UC")
-			{
-				activeHarpoon = ct.gameObject;
-			}
-		}
-	}
+        harpoonMap = new GameObject[(int)InputWrapper.StickState.NumStickStates];
+        harpoonMap[(int)InputWrapper.StickState.Down] = anchorObject.transform.Find("Harpoon_BC").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.Up] = anchorObject.transform.Find("Harpoon_UC").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.Left] = anchorObject.transform.Find("Harpoon_ML").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.Right] = anchorObject.transform.Find("Harpoon_MR").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.RightUp] = anchorObject.transform.Find("Harpoon_UR").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.LeftUp] = anchorObject.transform.Find("Harpoon_UL").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.RightDown] = anchorObject.transform.Find("Harpoon_BR").gameObject;
+        harpoonMap[(int)InputWrapper.StickState.LeftDown] = anchorObject.transform.Find("Harpoon_BL").gameObject;
 
-	void Update()
-	{
-		if (harpoonState == "cooldown")
-		{
-			cooldownValue -= Time.deltaTime;
+        Reset();
+    }
 
-			if (cooldownValue <= 0)
-			{
-				harpoonState = "rest";
-				cooldownValue = cooldownDuration;
-			}
-		}
+    private void Reset()
+    {
+        harpoonState = HarpoonState.Rest;
+        extendedArmValue = extendedArmDuration;
+        cooldownValue = cooldownDuration;
+        activeHarpoon = anchorObject.transform.GetChild(0).gameObject;
+        UnityEngine.Assertions.Assert.IsTrue(activeHarpoon.name.StartsWith("Harpoon"));
+    }
 
-		else if (harpoonState == "rest")
-		{
-			var stickState = InputWrapper.GetRightStick ();
+    void Update()
+    {
+        if (harpoonState == HarpoonState.Cooldown)
+        {
+            cooldownValue -= Time.deltaTime;
 
-			if (stickState != InputWrapper.StickState.Center)
-			{
-				//select harpoon
-				string harpoonName = "";
+            if (cooldownValue <= 0)
+            {
+                harpoonState = HarpoonState.Rest;
+                cooldownValue = cooldownDuration;
+            }
+        }
 
-				if (stickState == InputWrapper.StickState.Up)
-				{
-					harpoonName = "Harpoon_UC";
-				}
+        else if (harpoonState == HarpoonState.Rest)
+        {
+            var stickState = InputWrapper.GetRightStick ();
 
-				else if (stickState == InputWrapper.StickState.LeftUp)
-				{
-					harpoonName = "Harpoon_UL";
-				}
+            if (stickState != InputWrapper.StickState.Center)
+            {
+                activeHarpoon = harpoonMap[(int)stickState];
 
-				else if (stickState == InputWrapper.StickState.Left)
-				{
-					harpoonName = "Harpoon_ML";
-				}
+                //activate specific harpoon
+                var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
+                if (!Physics2D.Raycast(transform.position, forwardVector, 1.5f, LayerMask.GetMask("Wall")))
+                {
+                    activeHarpoon.GetComponent<SpriteRenderer>().sprite = extendedArm;
+                    harpoonState = HarpoonState.Attack;
+                }
+            }
+        }
 
-				else if (stickState == InputWrapper.StickState.LeftDown)
-				{
-					harpoonName = "Harpoon_BL";
-				}
+        else if (harpoonState == HarpoonState.Attack)
+        {
+            var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
+            RaycastHit2D hit = Physics2D.Raycast(anchorObject.transform.position, forwardVector, 2f, LayerMask.GetMask("Enemy"));
 
-				else if (stickState == InputWrapper.StickState.Down)
-				{
-					harpoonName = "Harpoon_BC";
-				}
+            if (hit.collider != null)
+            {
+                GameObject hitGO = hit.collider.gameObject;
+                hitGO.GetComponent<EnemyDieScript>().Die();
+            }
 
-				else if (stickState == InputWrapper.StickState.RightDown)
-				{
-					harpoonName = "Harpoon_BR";
-				}
+            extendedArmValue -= Time.deltaTime;
 
-				else if (stickState == InputWrapper.StickState.Right)
-				{
-					harpoonName = "Harpoon_MR";
-				}
-
-				else if (stickState == InputWrapper.StickState.RightUp)
-				{
-					harpoonName = "Harpoon_UR";
-				}
-
-				foreach (Transform ct in anchorObject.transform)
-				{
-					if (ct.gameObject.name == harpoonName)
-					{
-						activeHarpoon = ct.gameObject;
-					}
-				}
-
-				//activate specific harpoon
-				var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
-				if (!Physics2D.Raycast(transform.position, forwardVector, 1.5f, LayerMask.GetMask("Wall")))
-				{
-					SpriteRenderer srA = activeHarpoon.GetComponent<SpriteRenderer>();
-					srA.sprite = extendedArm;
-
-					harpoonState = "attack";
-				}
-			}
-		}
-
-		else if (harpoonState == "attack")
-		{
-			var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
-			RaycastHit2D hit = Physics2D.Raycast(anchorObject.transform.position, forwardVector, 2f, LayerMask.GetMask("Enemy"));
-
-			if (hit.collider != null)
-			{
-				GameObject hitGO = hit.collider.gameObject;
-				EnemyDieScript eds = hitGO.GetComponent<EnemyDieScript>();
-				eds.Die();
-			}
-
-			extendedArmValue -= Time.deltaTime;
-
-			if (extendedArmValue <= 0)
-			{
-				SpriteRenderer srD = activeHarpoon.GetComponent<SpriteRenderer>();
-				srD.sprite = retractedArm;
-
-				harpoonState = "cooldown";
-				extendedArmValue = extendedArmDuration;
-			}
-		}
-	}
+            if (extendedArmValue <= 0)
+            {
+                activeHarpoon.GetComponent<SpriteRenderer>().sprite = retractedArm;
+                harpoonState = HarpoonState.Cooldown;
+                extendedArmValue = extendedArmDuration;
+            }
+        }
+    }
 }
