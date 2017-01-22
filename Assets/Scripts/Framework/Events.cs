@@ -81,4 +81,14 @@ public class Events
             OnScreenShakeEnd();
         }
     }
+
+    public delegate void GameOverListener();
+    public static event GameOverListener OnGameOver;
+    public static void GameOver()
+    {
+        if (OnGameOver != null)
+        {
+            OnGameOver();
+        }
+    }
 }

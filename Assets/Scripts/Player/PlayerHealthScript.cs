@@ -73,6 +73,7 @@ public class PlayerHealthScript : MonoBehaviour
 			{
                 gameObject.SetActive(false);
                 Events.PlayerDies();
+                Events.GameOver();
 			}
 		}
 	}
