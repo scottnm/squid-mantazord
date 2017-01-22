@@ -10,7 +10,7 @@ public class HarpoonAttackScript : MonoBehaviour
 	public Sprite extendedArm;
 
 	string harpoonState = "rest";
-	float extendedArmDuration = .1f;
+	float extendedArmDuration = .25f;
 	float extendedArmValue;
 	float cooldownDuration = .2f;
 	float cooldownValue;
