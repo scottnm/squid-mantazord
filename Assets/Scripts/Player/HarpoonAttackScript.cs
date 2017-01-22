@@ -116,9 +116,6 @@ public class HarpoonAttackScript : MonoBehaviour
 				var forwardVector = activeHarpoon.transform.TransformVector(Vector2.up);
 				if (!Physics2D.Raycast(transform.position, forwardVector, 1.5f, LayerMask.GetMask("Wall")))
 				{
-					//BoxCollider2D bcA = activeHarpoon.GetComponent<BoxCollider2D>();
-					//bcA.enabled = true;
-
 					SpriteRenderer srA = activeHarpoon.GetComponent<SpriteRenderer>();
 					srA.sprite = extendedArm;
 
