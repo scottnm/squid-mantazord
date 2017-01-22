@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     enum AiAction
     {
+        Pursue,
         GoForward,
         TurnLeft,
         TurnRight,
@@ -72,9 +73,20 @@ public class EnemyAI : MonoBehaviour
         {
             // time to make another action
             EvaluteGameState();
+            var previousAction = currentAction;
             currentAction = Act(currentState);
+            if (previousAction == AiAction.Pursue && currentAction != AiAction.Pursue)
+            {
+                var angle = Vector2.Angle(Vector2.up, facingVector);
+                var snappedAngle = Mathf.Round(angle / 90) * 90f;
+                facingVector = Quaternion.Euler(0, 0, snappedAngle) * Vector2.up;
+            }
             switch (currentAction)
             {
+                case AiAction.Pursue:
+                    movementVector = currentState.directionToPlayer;
+                    facingVector = currentState.directionToPlayer;
+                    break;
                 case AiAction.GoForward:
                     movementVector = facingVector;
                     break;
@@ -90,7 +102,7 @@ public class EnemyAI : MonoBehaviour
                     movementVector = Vector2.zero;
                     break;
             }
-            // reset the timer
+
             aiCooldownTimer = aiCooldownTime;
         }
         else
@@ -105,8 +117,12 @@ public class EnemyAI : MonoBehaviour
     private void EvaluteGameState()
     {
         ArenaGrid grid = ArenaGenerator.GetGridInstance();
-        currentState.directionToPlayer = player.transform.position - transform.position;
-        currentState.canSeePlayer = Mathf.Abs(Vector2.Angle(facingVector, currentState.directionToPlayer)) < 90f;
+        var directionToPlayer = (player.transform.position - transform.position);
+        var distanceToPlayer = directionToPlayer.magnitude;
+        currentState.directionToPlayer = directionToPlayer.normalized;
+        currentState.canSeePlayer = ! Physics2D.Raycast(transform.position, currentState.directionToPlayer,
+            distanceToPlayer, LayerMask.GetMask("Wall")) &&
+            Mathf.Abs(Vector2.Angle(facingVector, currentState.directionToPlayer)) < 90f;
         currentState.tilePos = Vec2i.toVec2i((Vector2)transform.position - grid.origin);
 
         var x = currentState.tilePos.x;
@@ -128,6 +144,10 @@ public class EnemyAI : MonoBehaviour
 
     private AiAction Act(GameStateEvaluation currentState)
     {
+        if (currentState.canSeePlayer)
+        {
+            return AiAction.Pursue;
+        }
         float randomChoice = Random.Range(0f, 1f);
         if (randomChoice < attitude.GoForwardRatio)
         {
