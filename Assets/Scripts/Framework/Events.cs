@@ -52,6 +52,16 @@ public class Events
         }
     }
 
+    public delegate void PlayerHealthChangedListener(int health);
+    public static event PlayerHealthChangedListener OnPlayerHealthChange;
+    public static void PlayerHealthChanges(int health)
+    {
+        if (OnPlayerHealthChange != null)
+        {
+            OnPlayerHealthChange(health);
+        }
+    }
+
     public delegate void EnemyDeathListener(GameObject enemy);
     public static event EnemyDeathListener OnEnemyDeath;
     public static void EnemyDies(GameObject enemy)

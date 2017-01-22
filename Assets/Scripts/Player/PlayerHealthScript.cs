@@ -8,7 +8,7 @@ public class PlayerHealthScript : MonoBehaviour
     {
        Healthy,
        Hurt,
-       Dead 
+       Dead
     }
 
     [SerializeField]
@@ -67,6 +67,7 @@ public class PlayerHealthScript : MonoBehaviour
 				health -= 1;
 				state = PlayerState.Hurt;
                 Events.PlayerDamaged();
+                Events.PlayerHealthChanges(health);
 			}
 
 			if (health <= 0)
