@@ -15,10 +15,6 @@ public class HarpoonAttackScript : MonoBehaviour
 	float cooldownDuration = .2f;
 	float cooldownValue;
 
-	[SerializeField]
-	string harpoonName = "";
-
-	// Use this for initialization
 	void Start()
 	{
 		extendedArmValue = extendedArmDuration;
@@ -41,7 +37,6 @@ public class HarpoonAttackScript : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		if (harpoonState == "cooldown")
@@ -62,7 +57,7 @@ public class HarpoonAttackScript : MonoBehaviour
 			if (stickState != InputWrapper.StickState.Center)
 			{
 				//select harpoon
-				harpoonName = "";
+				string harpoonName = "";
 
 				if (stickState == InputWrapper.StickState.Up)
 				{

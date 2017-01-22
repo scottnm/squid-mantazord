@@ -56,13 +56,16 @@ public class EnemyAI : MonoBehaviour
     private Vector2 movementVector;
     [SerializeField]
     private GameStateEvaluation currentState;
-    private GameObject player;
+    private static GameObject player = null;
 
 	private void Start ()
     {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag(Tags.Player);
+        }
         facingVector = Vector2.up;
         movementVector = Vector2.up;
-        player = GameObject.FindGameObjectWithTag(Tags.Player);
         aiCooldownTimer = aiCooldownTime;
 	}
 	
