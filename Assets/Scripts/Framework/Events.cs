@@ -12,16 +12,6 @@ public class Events
         }
     }
 
-    public delegate void EnemyDeathListener(GameObject enemy);
-    public static event EnemyDeathListener OnEnemyDeath;
-    public static void EnemyDies(GameObject enemy)
-    {
-        if (OnEnemyDeath != null)
-        {
-            OnEnemyDeath(enemy);
-        }
-    }
-
     public delegate void EndActListener();
     public static event EndActListener OnEndAct;
     public static void EndAct()
@@ -39,6 +29,56 @@ public class Events
         if (OnEnemySpawn != null)
         {
             OnEnemySpawn(enemyType);
+        }
+    }
+
+    public delegate void PlayerDamageListener();
+    public static event PlayerDamageListener OnPlayerDamage;
+    public static void PlayerDamaged()
+    {
+        if (OnPlayerDamage != null)
+        {
+            OnPlayerDamage();
+        }
+    }
+
+    public delegate void PlayerDeathListener();
+    public static event PlayerDeathListener OnPlayerDeath;
+    public static void PlayerDies()
+    {
+        if (OnPlayerDeath != null)
+        {
+            OnPlayerDeath();
+        }
+    }
+
+    public delegate void EnemyDeathListener(GameObject enemy);
+    public static event EnemyDeathListener OnEnemyDeath;
+    public static void EnemyDies(GameObject enemy)
+    {
+        if (OnEnemyDeath != null)
+        {
+            OnEnemyDeath(enemy);
+        }
+    }
+
+    public delegate void ScreenShakeBeginListener();
+    public static event ScreenShakeBeginListener OnScreenShakeBegin;
+    public static void ScreenShakeBegin()
+    {
+        if (OnScreenShakeBegin != null)
+        {
+            OnScreenShakeBegin();
+        }
+    }
+
+    public delegate void ScreenShakeEndListener();
+    public static event ScreenShakeEndListener OnScreenShakeEnd;
+    public static void ScreenShakeEnd()
+    {
+        if (OnScreenShakeEnd != null)
+        {
+            OnScreenShakeEnd();
         }
     }
 }

@@ -18,7 +18,7 @@ public class ScreenShake : MonoBehaviour
 
     public IEnumerator Shake()
     {
-        Debug.Log("ShakeStart");
+        Events.ScreenShakeBegin();
         var cameraOrigin = transform.position;
         float time = 0;
         while (time < shakeTime)
@@ -29,5 +29,6 @@ public class ScreenShake : MonoBehaviour
             time += Time.deltaTime;
         }
         transform.position = cameraOrigin;
+        Events.ScreenShakeEnd();
     }
 }
