@@ -92,6 +92,16 @@ public class Events
         }
     }
 
+    public delegate void StartGameListener();
+    public static event StartGameListener OnStartGame;
+    public static void StartGame()
+    {
+        if (OnStartGame != null)
+        {
+            OnStartGame();
+        }
+    }
+
     public delegate void GameOverListener();
     public static event GameOverListener OnGameOver;
     public static void GameOver()
