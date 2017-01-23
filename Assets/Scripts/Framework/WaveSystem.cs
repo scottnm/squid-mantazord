@@ -67,7 +67,7 @@ public class WaveSystem : MonoBehaviour
         //acts[1] = act2;
         //acts[2] = act3;
         Events.OnEnemyDeath += OnEnemyDeath;
-        StartCoroutine(BeginInitialWave());
+        Events.OnStartGame += StartWaveSystem;
 	}
 
     private void OnDestroy()
@@ -104,7 +104,7 @@ public class WaveSystem : MonoBehaviour
         float time = 0;
         WaveSpecification waveSpec = currentAct.waveSpecs[wavenumber];
         ArenaGenerator.GetGridInstance().AddSpawnPoints(waveSpec.additionalSpawns);
-        
+
         while (waveSpec.enemySpec.EnemiesLeft() > 0)
         {
             float percentageEnemiesSpawned = (1.0f * waveSpec.enemySpec.EnemiesSpawned()) / waveSpec.enemySpec.TotalEnemies();
@@ -127,5 +127,10 @@ public class WaveSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         StartCoroutine(LaunchWave(actnumber, wavenumber + 1));
+    }
+
+    void StartWaveSystem ()
+    {
+        StartCoroutine(BeginInitialWave());
     }
 }
