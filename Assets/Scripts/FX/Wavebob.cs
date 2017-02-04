@@ -17,8 +17,13 @@ public class Wavebob : MonoBehaviour
 
 	void Update ()
     {
-        float x = Time.time;
-        var y = Mathf.Sin(2 * x) + Mathf.Sin(4.1f * x + 1);
+        float t = Time.time;
+        var y = 3 * Mathf.Sin(2 * t);
+        var x = 3 * Mathf.Sin(t);
+        var rot = 2 * Mathf.Sin(t);
+
         rxform.position = origin + Vector3.up * y * bobScale;
+        rxform.position = rxform.position + Vector3.right * x * bobScale;
+        rxform.eulerAngles = Vector3.forward * rot;
     }
 }

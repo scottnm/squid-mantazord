@@ -11,16 +11,20 @@ public class EnemyPool : MonoBehaviour
     int numEnemiesPerPool;
     [SerializeField]
     GameObject PufferPrefab;
+    [SerializeField]
+    GameObject EelPrefab;
+    [SerializeField]
+    GameObject MantaPrefab;
 
-    public struct Pool 
+    public struct Pool
     {
         public HashSet<GameObject> free;
         public HashSet<GameObject> inUse;
 
         public Pool(Transform parent, GameObject enemyPrefab, int enemiesPerPool)
         {
-            free = new HashSet<GameObject>(); 
-            inUse = new HashSet<GameObject>(); 
+            free = new HashSet<GameObject>();
+            inUse = new HashSet<GameObject>();
 
             for (int i = 0; i < enemiesPerPool; ++i)
             {
@@ -51,12 +55,16 @@ public class EnemyPool : MonoBehaviour
     }
 
     Pool PufferPool;
+    Pool EelPool;
+    Pool MantaPool;
 
 	void Start ()
     {
         if (instance == null)
         {
             PufferPool = new Pool(transform, PufferPrefab, numEnemiesPerPool);
+            EelPool = new Pool(transform, EelPrefab, numEnemiesPerPool);
+            MantaPool = new Pool(transform, MantaPrefab, numEnemiesPerPool);
             instance = this;
             Events.OnEnemyDeath += OnEnemyDeath;
         }
@@ -79,7 +87,20 @@ public class EnemyPool : MonoBehaviour
     {
         Events.EnemySpawned(et);
         var spawnPosition = ArenaGenerator.GetGridInstance().GetRandomSpawn();
-        PufferPool.Spawn(spawnPosition);
+
+        int r = Random.Range(0,3);
+        if (r == 0)
+        {
+            PufferPool.Spawn(spawnPosition);
+        }
+        else if (r == 1)
+        {
+            EelPool.Spawn(spawnPosition);
+        }
+        else if (r == 2)
+        {
+            MantaPool.Spawn(spawnPosition);
+        }
     }
 
     private void OnEnemyDeath(GameObject enemy)
