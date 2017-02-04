@@ -88,7 +88,7 @@ public class EnemyPool : MonoBehaviour
         Events.EnemySpawned(et);
         var spawnPosition = ArenaGenerator.GetGridInstance().GetRandomSpawn();
 
-        int r = (int)Mathf.Floor(Random.Range(0,3));
+        int r = Random.Range(0,3);
         if (r == 0)
         {
             PufferPool.Spawn(spawnPosition);
