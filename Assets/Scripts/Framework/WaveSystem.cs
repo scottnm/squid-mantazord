@@ -49,12 +49,10 @@ public class WaveSystem : MonoBehaviour
 
     [SerializeField]
     ActSpecification act1;
-    /*
     [SerializeField]
     ActSpecification act2;
     [SerializeField]
     ActSpecification act3;
-    */
 
     ActSpecification[] acts;
     int numEnemiesKilled;
@@ -62,10 +60,10 @@ public class WaveSystem : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        acts = new ActSpecification[1];//3];
+        acts = new ActSpecification[3];
         acts[0] = act1;
-        //acts[1] = act2;
-        //acts[2] = act3;
+        acts[1] = act2;
+        acts[2] = act3;
         Events.OnEnemyDeath += OnEnemyDeath;
         Events.OnStartGame += StartWaveSystem;
 	}
@@ -93,6 +91,7 @@ public class WaveSystem : MonoBehaviour
         if (wavenumber >= currentAct.waveSpecs.Length)
         {
             Events.EndAct();
+            StartCoroutine(LaunchWave(actnumber + 1, 0));
             yield break;
         }
 
