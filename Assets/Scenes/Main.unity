@@ -419,6 +419,7 @@ GameObject:
   - component: {fileID: 933620049}
   - component: {fileID: 933620051}
   - component: {fileID: 933620050}
+  - component: {fileID: 933620052}
   m_Layer: 11
   m_Name: Harpoon
   m_TagString: Untagged
@@ -491,6 +492,19 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &933620052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 933620048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ebed591bb6d064c89a0553883cd1b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  retractedArm: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
+  extendedArm: {fileID: 21300002, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
 --- !u!1 &949181248
 GameObject:
   m_ObjectHideFlags: 0
@@ -1576,7 +1590,6 @@ GameObject:
   - component: {fileID: 2068209136}
   - component: {fileID: 2068209135}
   - component: {fileID: 2068209134}
-  - component: {fileID: 2068209133}
   - component: {fileID: 2068209131}
   - component: {fileID: 2068209130}
   - component: {fileID: 2068209132}
@@ -1629,20 +1642,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.3}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &2068209133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114606570889866010, guid: 306c02b60024d454098798e185a1dcda,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2068209129}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19da35cafa77643a59f8c3e9cbef6226, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  retractedArm: {fileID: 21300000, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
-  extendedArm: {fileID: 21300002, guid: a7b2349ea33fe4ebab5b6a0a12263608, type: 3}
 --- !u!50 &2068209134
 Rigidbody2D:
   serializedVersion: 4
@@ -1769,14 +1768,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputs:
-    LeftStick: 8
-    RightStick: 8
+    LeftStick: {x: 0, y: 0}
+    RightStick:
+      angle: 0
+      stickPushed: 0
     Submit: 0
     Cancel: 0
-  leftx: 0
-  lefty: 0
-  rightx: 0
-  righty: 0
 --- !u!1 &2146745829
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,6 +38,11 @@ public class InputWrapper
         return new RightStickState(angle, true);
     }
 
+    public static bool AttackTrigger()
+    {
+        return Mathf.Epsilon < Input.GetAxis(RightTrigger);
+    }
+
     public static bool SubmitPressed()
     {
         return Input.GetAxis(Submit) > Mathf.Epsilon;
@@ -56,6 +61,9 @@ public class InputWrapper
     private static readonly string RightStickY =
         Application.platform == RuntimePlatform.OSXPlayer ||
         Application.platform == RuntimePlatform.OSXEditor ? "MacRightStickY" : "WinRightStickY";
+    private static readonly string RightTrigger =
+        Application.platform == RuntimePlatform.OSXPlayer ||
+        Application.platform == RuntimePlatform.OSXEditor ? "MacRT" : "WinRT";
     private static readonly string Submit =
         Application.platform == RuntimePlatform.OSXPlayer ||
         Application.platform == RuntimePlatform.OSXEditor ? "MacSubmit" : "WinSubmit";
