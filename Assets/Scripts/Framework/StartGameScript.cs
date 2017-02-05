@@ -11,7 +11,7 @@ public class StartGameScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (InputWrapper.GetLeftStick().magnitude < Mathf.Epsilon)
+		if (InputWrapper.GetLeftStick().magnitude > Mathf.Epsilon)
 		{
 			mainText.SetActive(false);
 			shadowText.SetActive(false);

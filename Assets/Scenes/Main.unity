@@ -394,6 +394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 539243796}
   - component: {fileID: 539243797}
+  - component: {fileID: 539243798}
   m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
@@ -449,6 +450,18 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &539243798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 539243795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040b2516876b64d3e9e41f4b8b43eda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CrosshairRotation: 0
 --- !u!1001 &630978992
 Prefab:
   m_ObjectHideFlags: 0
@@ -1258,6 +1271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc433ceb162a2840943a633532df7df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CrosshairRotation: 0
 --- !u!1 &1498365409
 GameObject:
   m_ObjectHideFlags: 0
