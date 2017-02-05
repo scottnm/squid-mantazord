@@ -2,103 +2,45 @@
 
 public class InputWrapper
 {
-    public enum StickState
-    {
-        Right = 0,
-        RightUp,
-        Up,
-        LeftUp,
-        Left,
-        LeftDown,
-        Down,
-        RightDown,
-        Center,
-        NumStickStates
-    }
-
-    public static StickState GetLeftStick()
-    {
-        return GetStickState(Input.GetAxis(LeftStickX), Input.GetAxis(LeftStickY));
-    }
-
-    public static Vector2 GetLeftStickVector()
+    public static Vector2 GetLeftStick()
     {
         return new Vector2(Input.GetAxis(LeftStickX), Input.GetAxis(LeftStickY)).normalized;
     }
 
-    public static Vector2 GetRightStickVector()
+    [System.Serializable]
+    public struct RightStickState
     {
-        return new Vector2(Input.GetAxis(RightStickX), Input.GetAxis(RightStickY));
+        public RightStickState(float _angle, bool _stickPushed)
+        {
+            angle = _angle;
+            stickPushed = _stickPushed;
+        }
+        public float angle;
+        public bool stickPushed;
     }
 
-    public static StickState GetRightStick()
+    public static RightStickState GetRightStick()
     {
-        return GetStickState(Input.GetAxis(RightStickX), Input.GetAxis(RightStickY));
-    }
-
-    private static StickState GetStickState(float stickX, float stickY)
-    {
+        var stickX = Input.GetAxis(RightStickX);
+        var stickY = Input.GetAxis(RightStickY);
         if (Mathf.Abs(stickX) < Mathf.Epsilon && Mathf.Abs(stickY) < Mathf.Epsilon)
         {
-            return StickState.Center;
+            return new RightStickState( 0.0f, false );
         }
 
-        Vector2 xy = new Vector2(stickX, stickY).normalized;
-        var x = xy.x;
-        var y = xy.y;
-
-        float angle = Mathf.Acos(x) * 180 / Mathf.PI;
-
-        if (y < -Mathf.Epsilon)
+        Vector2 normXY= new Vector2(stickX, stickY).normalized;
+        float angle = Mathf.Acos(normXY.x) * 180 / Mathf.PI;
+        if (normXY.y < -Mathf.Epsilon)
         {
-            angle = -angle;
+            angle = 360 - angle;
         }
 
-        if (angle > -22.5 && angle <= 22.5)
-        {
-            // 0
-            return StickState.Right;
-        }
+        return new RightStickState(angle, true);
+    }
 
-        else if (angle > 22.5 && angle <= 67.5)
-        {
-            // 45
-            return StickState.RightUp;
-        }
-        else if ((angle > 67.5 && angle <= 90)
-                || (angle > 90 && angle <= 112.5))
-        {
-            // 90
-            return StickState.Up;
-        }
-        else if (angle > 112.5 && angle <= 157.5)
-        {
-            // 135
-            return StickState.LeftUp;
-        }
-        else if ((angle > 157.5 && angle <= 180.0) ||
-            (angle >= -180 && angle <= -157.5))
-        {
-            // 180
-            return StickState.Left;
-        }
-        else if (angle > -67.5 && angle <= -22.5)
-        {
-            // -45
-            return StickState.RightDown;
-        }
-        else if ((angle > -112.5 && angle <= -90)
-                 || (angle > -90 && angle <= -67.5))
-        {
-            // -90
-            return StickState.Down;
-        }
-        else
-        {
-            // -135
-            UnityEngine.Assertions.Assert.IsTrue(angle > -157.5 && angle <= -112.5);
-            return StickState.LeftDown;
-        }
+    public static bool AttackTrigger()
+    {
+        return Mathf.Epsilon < Input.GetAxis(RightTrigger);
     }
 
     public static bool SubmitPressed()
@@ -119,6 +61,9 @@ public class InputWrapper
     private static readonly string RightStickY =
         Application.platform == RuntimePlatform.OSXPlayer ||
         Application.platform == RuntimePlatform.OSXEditor ? "MacRightStickY" : "WinRightStickY";
+    private static readonly string RightTrigger =
+        Application.platform == RuntimePlatform.OSXPlayer ||
+        Application.platform == RuntimePlatform.OSXEditor ? "MacRT" : "WinRT";
     private static readonly string Submit =
         Application.platform == RuntimePlatform.OSXPlayer ||
         Application.platform == RuntimePlatform.OSXEditor ? "MacSubmit" : "WinSubmit";
