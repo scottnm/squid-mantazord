@@ -4,7 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Enemy
+  - PufferFish
+  - Eel
+  - MantaRay
   layers:
   - Default
   - TransparentFX
