@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
 
 	void FixedUpdate ()
     {
-        Vector3 motionVector = InputWrapper.GetLeftStickVector();
+        Vector3 motionVector = InputWrapper.GetLeftStick();
         transform.Translate(motionVector * Time.deltaTime * speed);
 	}
 }
