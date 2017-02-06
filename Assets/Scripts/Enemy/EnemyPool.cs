@@ -8,13 +8,66 @@ public class EnemyPool : MonoBehaviour
     public static EnemyPool instance;
 
     [SerializeField]
-    int numEnemiesPerPool;
+    private int numEnemiesPerPool;
     [SerializeField]
-    GameObject PufferPrefab;
+    private GameObject PufferPrefab;
     [SerializeField]
-    GameObject EelPrefab;
+    private GameObject EelPrefab;
     [SerializeField]
-    GameObject MantaPrefab;
+    private GameObject MantaPrefab;
+
+    private Dictionary<string, Pool> enemyPoolMap;
+
+	void Start ()
+    {
+        if (instance == null)
+        {
+            enemyPoolMap = new Dictionary<string, Pool>();
+            enemyPoolMap[Tags.Enemy.PufferFish] = new Pool(transform, PufferPrefab, numEnemiesPerPool);
+            enemyPoolMap[Tags.Enemy.Eel] = new Pool(transform, EelPrefab, numEnemiesPerPool);
+            enemyPoolMap[Tags.Enemy.MantaRay] = new Pool(transform, MantaPrefab, numEnemiesPerPool);
+            instance = this;
+            Events.OnEnemyDeath += OnEnemyDeath;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+	}
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+            Events.OnEnemyDeath -= OnEnemyDeath;
+        }
+    }
+
+    public void Spawn(EnemyType et)
+    {
+        Events.EnemySpawned(et);
+        var spawnPosition = ArenaGenerator.GetGridInstance().GetRandomSpawn();
+
+        int r = Random.Range(0,3);
+        if (r == 0)
+        {
+            enemyPoolMap[Tags.Enemy.PufferFish].Spawn(spawnPosition);
+        }
+        else if (r == 1)
+        {
+            enemyPoolMap[Tags.Enemy.Eel].Spawn(spawnPosition);
+        }
+        else if (r == 2)
+        {
+            enemyPoolMap[Tags.Enemy.MantaRay].Spawn(spawnPosition);
+        }
+    }
+
+    private void OnEnemyDeath(GameObject enemy)
+    {
+        enemyPoolMap[enemy.tag].Free(enemy);
+    }
 
     public struct Pool
     {
@@ -52,59 +105,5 @@ public class EnemyPool : MonoBehaviour
             free.Add(pufferToFree);
             pufferToFree.SetActive(false);
         }
-    }
-
-    Pool PufferPool;
-    Pool EelPool;
-    Pool MantaPool;
-
-	void Start ()
-    {
-        if (instance == null)
-        {
-            PufferPool = new Pool(transform, PufferPrefab, numEnemiesPerPool);
-            EelPool = new Pool(transform, EelPrefab, numEnemiesPerPool);
-            MantaPool = new Pool(transform, MantaPrefab, numEnemiesPerPool);
-            instance = this;
-            Events.OnEnemyDeath += OnEnemyDeath;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-	}
-
-    private void OnDestroy()
-    {
-        if (instance == this)
-        {
-            instance = null;
-            Events.OnEnemyDeath -= OnEnemyDeath;
-        }
-    }
-
-    public void Spawn(EnemyType et)
-    {
-        Events.EnemySpawned(et);
-        var spawnPosition = ArenaGenerator.GetGridInstance().GetRandomSpawn();
-
-        int r = Random.Range(0,3);
-        if (r == 0)
-        {
-            PufferPool.Spawn(spawnPosition);
-        }
-        else if (r == 1)
-        {
-            EelPool.Spawn(spawnPosition);
-        }
-        else if (r == 2)
-        {
-            MantaPool.Spawn(spawnPosition);
-        }
-    }
-
-    private void OnEnemyDeath(GameObject enemy)
-    {
-        PufferPool.Free(enemy);
     }
 }
