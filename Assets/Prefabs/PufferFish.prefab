@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114309248576096822}
   m_Layer: 9
   m_Name: PufferFish
-  m_TagString: Enemy
+  m_TagString: PufferFish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

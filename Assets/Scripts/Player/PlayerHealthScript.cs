@@ -60,9 +60,7 @@ public class PlayerHealthScript : MonoBehaviour
 	{
 		if (state == PlayerState.Healthy)
 		{
-			GameObject otherGO = otherCollider.collider.gameObject;
-
-			if (otherGO.tag == Tags.Enemy)
+			if (Tags.Enemy.IsEnemyTag(otherCollider.gameObject.tag))
 			{
 				health -= 1;
 				state = PlayerState.Hurt;

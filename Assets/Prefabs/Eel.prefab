@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 114651626776432626}
   m_Layer: 9
   m_Name: Eel
-  m_TagString: Enemy
+  m_TagString: Eel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
