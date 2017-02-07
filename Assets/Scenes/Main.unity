@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 539243796}
   - component: {fileID: 539243797}
   m_Layer: 8
-  m_Name: Sprite
+  m_Name: CrosshairSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
