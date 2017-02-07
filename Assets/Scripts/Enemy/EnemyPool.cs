@@ -73,11 +73,13 @@ public class EnemyPool : MonoBehaviour
     {
         public HashSet<GameObject> free;
         public HashSet<GameObject> inUse;
+        private int totalEnemiesInPool;
 
         public Pool(Transform parent, GameObject enemyPrefab, int enemiesPerPool)
         {
             free = new HashSet<GameObject>();
             inUse = new HashSet<GameObject>();
+            totalEnemiesInPool = enemiesPerPool;
 
             for (int i = 0; i < enemiesPerPool; ++i)
             {
@@ -97,6 +99,8 @@ public class EnemyPool : MonoBehaviour
             inUse.Add(nextPuffer);
             nextPuffer.SetActive(true);
             nextPuffer.transform.position = spawnPosition;
+
+            UnityEngine.Assertions.Assert.AreEqual(free.Count + inUse.Count, totalEnemiesInPool);
         }
 
         public void Free(GameObject pufferToFree)
@@ -104,6 +108,8 @@ public class EnemyPool : MonoBehaviour
             inUse.Remove(pufferToFree);
             free.Add(pufferToFree);
             pufferToFree.SetActive(false);
+
+            UnityEngine.Assertions.Assert.AreEqual(free.Count + inUse.Count, totalEnemiesInPool);
         }
     }
 }
