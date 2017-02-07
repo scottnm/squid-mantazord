@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class RotateCrosshairs : MonoBehaviour
 {
+    Transform pivotTransform;
+    Transform spriteTransform;
 
-	void Update ()
+    private void Start()
+    {
+        pivotTransform = transform;
+        spriteTransform = transform.Find("CrosshairSprite");
+    }
+ 
+    void Update ()
     {
         var aimStickState = InputWrapper.GetRightStick();
         if (aimStickState.stickPushed)
         {
-            transform.rotation = Quaternion.Euler(0, 0, aimStickState.angle);
-		}
-	}
+            pivotTransform.rotation = Quaternion.Euler(0, 0, aimStickState.angle);
+            spriteTransform.rotation = Quaternion.identity;
+        }
+    }
 }
